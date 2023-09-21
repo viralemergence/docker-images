@@ -25,11 +25,6 @@ fi
 
 apt_install wget ca-certificates
 
-install2.r --error --skipmissing --skipinstalled -n "$NCPUS" \
-    yaml \
-    JuliaCall \
-    JuliaConnectoR
-
 # Get the latest Julia version by using R and the R yaml package.
 if [ "$JULIA_VERSION" = "latest" ]; then
     # shellcheck disable=SC2016
