@@ -32,6 +32,7 @@ CMD ["julia"]
 
 # do the julia things we want
 RUN julia -e 'using Pkg; Pkg.activate("."); Pkg.add("CSV"); Pkg.add("DataFrames"); Pkg.add(PackageSpec(name="NCBITaxonomy", rev="main"))'
+RUN julia -e 'using Pkg; Pkg.instantiate()'
 
 # note, R.utils is needed for datatable to work with csv.gz files
 RUN install2.r taxize --error --skipinstalled --ncpus -1 \
