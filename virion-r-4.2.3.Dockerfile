@@ -31,8 +31,7 @@ CMD ["R"]
 CMD ["julia"]
 
 # do the julia things we want
-RUN julia -e 'using Pkg; Pkg.activate("."); Pkg.add("CSV"); Pkg.add("DataFrames")'
-RUN julia -e 'using Pkg; Pkg.activate("."); Pkg.add(PackageSpec(name="NCBITaxonomy", rev="main"))'
+RUN julia -e 'using Pkg; Pkg.activate("."); Pkg.add("CSV"); Pkg.add("DataFrames"); Pkg.add(PackageSpec(name="NCBITaxonomy", rev="main"))'
 
 # note, R.utils is needed for datatable to work with csv.gz files
 RUN install2.r taxize --error --skipinstalled --ncpus -1 \
@@ -50,4 +49,5 @@ RUN install2.r taxize --error --skipinstalled --ncpus -1 \
  R.utils \
  here \
  data.table \
+ naniar \
  && rm -rf /tmp/downloaded_packages
