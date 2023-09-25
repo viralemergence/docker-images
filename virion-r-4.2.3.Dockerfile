@@ -35,5 +35,19 @@ RUN julia -e 'using Pkg; Pkg.activate("."); Pkg.add("CSV"); Pkg.add("DataFrames"
 RUN julia -e 'using Pkg; Pkg.activate("."); Pkg.add(PackageSpec(name="NCBITaxonomy", rev="main"))'
 
 # note, R.utils is needed for datatable to work with csv.gz files
-RUN install2.r taxize, readr, magrittr, dplyr, tidyr, RCurl, vroom, fs, zip, devtools, lubridate, yaml,  R.utils, here
-RUN install2.r data.table
+RUN install2.r taxize --error --skipinstalled --ncpus -1 \
+ readr \
+ magrittr \
+ dplyr \
+ tidyr \
+ RCurl \
+ vroom \
+ fs \
+ zip \
+ devtools \
+ lubridate \
+ yaml \
+ R.utils \
+ here \
+ data.table \
+ && rm -rf /tmp/downloaded_packages
