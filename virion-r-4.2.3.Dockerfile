@@ -31,8 +31,12 @@ CMD ["R"]
 CMD ["julia"]
 
 # do the julia things we want
-RUN julia -e 'using Pkg; Pkg.activate("."); Pkg.add("CSV"); Pkg.add("DataFrames"); Pkg.add("NCBITaxonomy")'
-#RUN julia -e 'using Pkg; Pkg.activate("."); Pkg.add(PackageSpec(name="NCBITaxonomy", rev="main"))'
+#RUN julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate()'
+RUN julia --project -e 'using Pkg; Pkg.activate("."); Pkg.add("CSV"); Pkg.add("DataFrames")'
+RUN julia --project -e 'using Pkg; Pkg.activate("."); Pkg.add(PackageSpec(name="NCBITaxonomy", rev="main"))'
+RUN julia --project -e "using NCBITaxonomy"
+RUN julia --project -e "using CSV"
+RUN julia --project -e "using DataFrames"
 
 # note, R.utils is needed for datatable to work with csv.gz files
 RUN install2.r  --error --skipinstalled --ncpus -1 \
