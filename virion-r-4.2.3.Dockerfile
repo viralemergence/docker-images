@@ -27,15 +27,22 @@ RUN R -e "devtools::install_github('ropensci/rglobi')"
 COPY scripts/install_julia.sh /verena_scripts/install_julia.sh
 RUN /verena_scripts/install_julia.sh
 
-CMD ["R"]
-CMD ["julia"]
+#ENV JULIA_VERSION=1.7.3
+
+#RUN mkdir /opt/julia-${JULIA_VERSION} && \
+#    cd /tmp && \
+#    wget -q https://julialang-s3.julialang.org/bin/linux/x64/`echo ${JULIA_VERSION} | cut -d. -f 1,2`/julia-${JULIA_VERSION}-linux-x86_64.tar.gz && \
+#    tar xzf julia-${JULIA_VERSION}-linux-x86_64.tar.gz -C /opt/julia-${JULIA_VERSION} --strip-components=1 && \
+#    rm /tmp/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
+
+CMD ["julia", "R"]
 
 # do the julia things we want
 #RUN julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate()'
-RUN julia --project -e 'using Pkg; Pkg.activate("."); Pkg.add("CSV"); Pkg.add("DataFrames")'
-RUN julia --project -e 'using Pkg; Pkg.activate("."); Pkg.add(PackageSpec(name="NCBITaxonomy", rev="main"))'
-RUN set -eux; \
-    mkdir "$JULIA_USER_HOME";
+RUN julia -e 'import Pkg; Pkg.activate("."); Pkg.add("CSV"); Pkg.add("DataFrames"); Pkg.add(Pkg.PackageSpec(name="NCBITaxonomy", rev="main"))'
+#RUN julia --project -e 'import Pkg; Pkg.activate("."); Pkg.add(PackageSpec(name="NCBITaxonomy", rev="main"))'
+#RUN set -eux; \
+#    mkdir "$JULIA_USER_HOME";
 
 RUN julia -e 'using Pkg; Pkg.instantiate();'
 
@@ -56,4 +63,5 @@ RUN install2.r  --error --skipinstalled --ncpus -1 \
  R.utils \
  here \
  data.table \
+ JuliaCall \
  && rm -rf /tmp/downloaded_packages

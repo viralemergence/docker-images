@@ -4,7 +4,7 @@ set -e
 ## build ARGs
 NCPUS=${NCPUS:--1}
 
-JULIA_VERSION=${1:-${JULIA_VERSION:-latest}}
+#JULIA_VERSION=${1:-${JULIA_VERSION:-latest}}
 
 # a function to install apt packages only if they are not installed
 function apt_install() {
@@ -26,24 +26,24 @@ fi
 apt_install wget ca-certificates
 
 # Get the latest Julia version by using R and the R yaml package.
-if [ "$JULIA_VERSION" = "latest" ]; then
-    # shellcheck disable=SC2016
-    JULIA_VERSION=$(Rscript -e '
-js <- yaml::read_yaml("https://julialang-s3.julialang.org/bin/versions.json")
-versions <- names(js)
-is_stable <- unlist(Map(function(x) x$stable, js))
-latest_version <- sort(versions[is_stable], decreasing = TRUE)[1]
-cat(latest_version)
-')
-fi
+# if [ "$JULIA_VERSION" = "latest" ]; then
+#     # shellcheck disable=SC2016
+#     JULIA_VERSION=$(Rscript -e '
+# js <- yaml::read_yaml("https://julialang-s3.julialang.org/bin/versions.json")
+# versions <- names(js)
+# is_stable <- unlist(Map(function(x) x$stable, js))
+# latest_version <- sort(versions[is_stable], decreasing = TRUE)[1]
+# cat(latest_version)
+# ')
+# fi
 
-JULIA_MINOR_VERSION=${JULIA_VERSION%.*}
+#JULIA_MINOR_VERSION=${JULIA_VERSION%.*}
 
 # Download Julia and create a symbolic link.
-wget "https://julialang-s3.julialang.org/bin/linux/${ARCH_SHORT}/${JULIA_MINOR_VERSION}/julia-${JULIA_VERSION}-linux-${ARCH_LONG}.tar.gz"
+wget "https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.3-linux-x86_64.tar.gz"
 mkdir /opt/julia
-tar zxvf "julia-${JULIA_VERSION}-linux-${ARCH_LONG}.tar.gz" -C /opt/julia --strip-components 1
-rm -f "julia-${JULIA_VERSION}-linux-${ARCH_LONG}.tar.gz"
+tar zxvf "julia-1.7.3-linux-x86_64.tar.gz" -C /opt/julia --strip-components 1
+rm -f "julia-1.7.3-linux-x86_64.tar.gz"
 ln -s /opt/julia/bin/julia /usr/local/bin/julia
 
 julia --version
@@ -55,3 +55,4 @@ rm -rf /tmp/downloaded_packages
 ## Strip binary installed lybraries from RSPM
 ## https://github.com/rocker-org/rocker-versioned2/issues/340
 strip /usr/local/lib/R/site-library/*/libs/*.so
+
