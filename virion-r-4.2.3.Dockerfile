@@ -8,15 +8,15 @@ ENV R_VERSION=4.2.3
 ENV R_HOME=/usr/local/lib/R
 ENV TZ=Etc/UTC
 
-COPY scripts/install_R_source.sh /verena_scripts/install_R_source.sh
+COPY scripts/install_R_source.sh /temp_scripts/install_R_source.sh
 
-RUN /verena_scripts/install_R_source.sh
+RUN /temp_scripts/install_R_source.sh
 ENV CRAN=https://packagemanager.posit.co/cran/__linux__/jammy/2023-04-20
 ENV LANG=en_US.UTF-8
 
 # set up R 
-COPY scripts/setup_R.sh /verena_scripts/setup_R.sh
-RUN /verena_scripts/setup_R.sh
+COPY scripts/setup_R.sh /temp_scripts/setup_R.sh
+RUN /temp_scripts/setup_R.sh
 
 # do the R things we want
 RUN install2.r devtools remotes
@@ -24,21 +24,12 @@ RUN R -e "Sys.setenv("NOT_CRAN" = TRUE); Sys.setenv("LIBARROW_MINIMAL" = FALSE);
 RUN R -e "devtools::install_github('ropensci/rglobi')"
 
 # set up Julia
-COPY scripts/install_julia.sh /verena_scripts/install_julia.sh
-RUN /verena_scripts/install_julia.sh
-
-#ENV JULIA_VERSION=1.7.3
-
-#RUN mkdir /opt/julia-${JULIA_VERSION} && \
-#    cd /tmp && \
-#    wget -q https://julialang-s3.julialang.org/bin/linux/x64/`echo ${JULIA_VERSION} | cut -d. -f 1,2`/julia-${JULIA_VERSION}-linux-x86_64.tar.gz && \
-#    tar xzf julia-${JULIA_VERSION}-linux-x86_64.tar.gz -C /opt/julia-${JULIA_VERSION} --strip-components=1 && \
-#    rm /tmp/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
+COPY scripts/install_julia.sh /temp_scripts/install_julia.sh
+RUN /temp_scripts/install_julia.sh
 
 CMD ["julia", "R"]
 
 # do the julia things we want
-#RUN julia -e 'using Pkg; Pkg.activate("."); Pkg.instantiate()'
 RUN julia -e 'import Pkg; Pkg.activate("."); Pkg.add("CSV"); Pkg.add("DataFrames"); Pkg.add(Pkg.PackageSpec(name="NCBITaxonomy", rev="main"))'
 #RUN julia --project -e 'import Pkg; Pkg.activate("."); Pkg.add(PackageSpec(name="NCBITaxonomy", rev="main"))'
 #RUN set -eux; \

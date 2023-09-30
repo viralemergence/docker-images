@@ -25,19 +25,6 @@ fi
 
 apt_install wget ca-certificates
 
-# Get the latest Julia version by using R and the R yaml package.
-# if [ "$JULIA_VERSION" = "latest" ]; then
-#     # shellcheck disable=SC2016
-#     JULIA_VERSION=$(Rscript -e '
-# js <- yaml::read_yaml("https://julialang-s3.julialang.org/bin/versions.json")
-# versions <- names(js)
-# is_stable <- unlist(Map(function(x) x$stable, js))
-# latest_version <- sort(versions[is_stable], decreasing = TRUE)[1]
-# cat(latest_version)
-# ')
-# fi
-
-#JULIA_MINOR_VERSION=${JULIA_VERSION%.*}
 
 # Download Julia and create a symbolic link.
 wget "https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.3-linux-x86_64.tar.gz"
